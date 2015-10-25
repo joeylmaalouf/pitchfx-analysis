@@ -14,14 +14,30 @@ def main(argv):
       if "inning" in filename.lower():
         data_filenames.append(root + "/" + filename)
 
-  classifications = {
+  # pitch classification conversion to our three categories
+  pitch_classes = {
     "FT": "fast", "FF": "fast", "FA": "fast", "FS": "fast",
     "CU": "curve", "CB": "curve",
     "SL": "slide"
   }
 
+  # outcome classification conversion to our four categories
+  outcome_classes = {
+    "Home Run": "hit", "Triple": "hit", "Double": "hit", "Single": "hit", "Field Error": "hit", "Fielders Choice": "hit",
+    "Groundout": "hitout", "Flyout": "hitout", "Bunt Groundout": "hitout", "Pop Out": "hitout", "Bunt Pop Out": "hitout", "Double Play": "hitout", "Grounded Into DP": "hitout", "Runner Out": "hitout", "Forceout": "hitout", "Sac Bunt": "hitout", "Sac Fly": "hitout", "Sacrifice Bunt DP": "hitout", "Sac Fly DP": "hitout", "Fielders Choice Out": "hitout", "Lineout": "hitout", "Bunt Lineout": "hitout",
+    "Strikeout": "strikeout", "Strikeout - DP": "strikeout", "Batter Interference": "strikeout",
+    "Walk": "walk", "Intent Walk": "walk", "Hit By Pitch": "walk", "Fan interference": "walk", "Catcher Interference": "walk"
+  }
+
+  # the results dictionary, listing the number of each type of events each sequence leads to
+  results = {
+    ("fast", "fast", "curve"):  { "hit": 0, "hitout": 0, "strikeout": 0, "walk": 0 },
+    ("fast", "fast", "fast"):   { "hit": 0, "hitout": 0, "strikeout": 0, "walk": 0 },
+    ("fast", "slide", "slide"): { "hit": 0, "hitout": 0, "strikeout": 0, "walk": 0 },
+    ("slide", "fast", "slide"): { "hit": 0, "hitout": 0, "strikeout": 0, "walk": 0 }
+  }
+
   # parse our .xml files via an element tree
-  pitch_types = []
   for filename in data_filenames:
     try:
       game = ET.parse(filename)
@@ -34,10 +50,15 @@ def main(argv):
       for half in inning:
         for event in half:
           if event.tag == "atbat":
-            pitches = [classifications.get(action.attrib["pitch_type"], "misc")
+            pitches = tuple(pitch_classes.get(action.attrib["pitch_type"], "misc")
                        for action in event
-                       if action.tag == "pitch" and "pitch_type" in action.attrib]
-            print(pitches)
+                       if action.tag == "pitch" and "pitch_type" in action.attrib)
+            sequence = pitches[-3:]
+            if sequence in results.keys():
+              outcome = outcome_classes[event.attrib["event"]]
+              results[sequence][outcome] += 1
+  for k, v in results.items():
+    print k, v
 
 
 if __name__ == "__main__":
