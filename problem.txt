@@ -1,0 +1,133 @@
+We recommend you read through the whole problem first before you start tackling
+it. There are details for your submission which may affect the way you do things.
+
+Your objective is to write a python script which will analyze PITCHf/x data from
+2013 to come up with statistics that evaluate the effectiveness of different pitch
+sequences.
+
+If you're not familiar with PITCHf/x here's wikipedia's page on it:
+https://en.wikipedia.org/wiki/PITCHf/x
+
+You can download the data from here:
+https://dl.dropboxusercontent.com/u/10723844/interviews/2013_pitchfx_data.zip
+
+(watch out, uncompressed it takes about 500MB)
+
+Once you uncompress it you will find a number of folders, one for each day of
+the 2013 season. Inside each folder there will be a number of files. For the
+purposes of this exercise you only have to care about those with the word
+inning in their name. For example, if you look at the 06_13 folder you will see
+files like NYY_OAK_1_inning.xml or WSH_COL_1_inning.xml.
+
+Each of those inning files has all the inning, atbat, and pitch information for
+each game that happened that day. If you open them in an editor and it looks
+like the file is all one single line, try open it on a browser, they will
+output it in a nice structured way.
+
+Given this data, your script will sift through it looking for specific pitch
+sequences at the end of each atbat, collect the result for the atbat, and at
+the end present a graph with the percentage breakdown of atbat result (Out, Hit,
+Walk, etc) for each sequence.
+
+For example, imagine you're looking for the sequence:
+- Fastball
+- Fastball
+- Slider
+
+Your program would parse each file, and for each atbat in it see if the final pitch
+was a Slider. If it is then look if the previous two pitches were fastballs. If
+they were, then you associate that sequence with the result of the atbat
+(e.g. Strike Out, Walk). 
+
+A couple of important things to note:
+- The sequence should be at the end of the atbat. In other words, if in the
+example above the first 3 pitches of an atbat are 2 fastballs and a slider, but
+other pitches are thrown after the slider then you should disregard this atbat.
+- Make sure you don't mix pitches from different atbats or, even worse, from
+different games!
+
+Now all the details of what you're looking for in the data:
+- The sequences you will be looking for are:
+  1. Fastball Fastball Curveball
+  2. Fastball Fastball Fastball
+  3. Fastball Slider Slider
+  4. Slider Fastball Slider
+- To find the type of a pitch look in the pitch_type attribute. PITCHf/x has a
+  very nuanced classification, but for this program we're making things simpler:
+  * Fastballs: any of FT, FF, FA, FS
+  * Curveballs: any of CU, CB
+  * Slider: SL
+  * In case you're curious this is what the other types are:
+    CH: changeup
+    FC: cutter
+    KC: knuckle-curve
+    KN: knuckleball
+    EP: eephus
+    SF: split-fingered
+    SI: sinker
+- To find the result of an atbat look in the "event" attribute of the atbat element.
+  Please code the resulting play into one of the following bins:
+	- Hit (anything that resulted in a hit, single, double, triple, home run, bunt, etc.)
+	- Hit (out) (groundout, flyout, foul out)
+	- Strikeout (swinging or looking)
+	- Walk
+  If you're not sure which bin a particular event belongs too feel free to ask us.
+
+- Pretend you are presenting this to a General Manager (GM) of a MLB team and
+  do your best to have it laid out in a nice digestible way.
+- For bonus points, you can also generate graphs which filter out by whether the
+  pitcher throws right or left, and the batter stance. You can find this info in
+  the atbat element:
+  * p_throws will be "L" or "R" for lefty or righty pitchers
+  * stand will be "L" or "R" for lefty or righty batters.
+
+------------------------
+| Implementation Notes |
+------------------------
+
+Some things to keep in mind while you work on your submission:
+
+- We recommend you use lxml (http://lxml.de/tutorial.html). It's way faster than
+any other python xml parser out there and for this amount of data you want your
+script to be fast.
+- When writing the script you should use as many existing python packages as you
+can. For example, there are definitely no bonus points for writing your own xml parser!
+- Also keep performance in mind as you write this script. For example, think (and even
+better, test!) how it would behave when given a thousand files to process.
+
+----------------
+| Deliverables |
+----------------
+
+For your submission, we'd like to get the following:
+
+- A zipped git repository that includes the code for the script (you can break it up 
+  in multiple files if you want to) along with a README file that contains:
+  * How to run
+  * Python package dependencies
+  * Description of how the script works at a high-level
+  * How the code is organized (which modules do what, and their external dependencies)
+    and how control flows through the script.
+  * Interesting optimizations (if any)
+- The graphs you generated for the data we gave you. Feel free to choose the
+  format (PNG works pretty well, PDF too) but make sure they can be easily viewed
+  in many platforms (Mac, Windows, Linux) and they look good. Remember, you're
+  showing this to a General Manager of a team!
+  You can also put together an html page if you'd like to add some text with
+  explanations or notes that you'd like the General Manager to see. If you choose
+  this route, don't send us a link to a web page, instead send us the html/css/js
+  files and we'll look at it locally.
+
+We will run the program locally so let us know if there are any caveats about this
+that we should be aware of.
+
+In case you're wondering, the purpose of getting the git repository is we'd
+like to see how you work through a project. We're big believers of commit
+early, commit often, and also good commit messages, and getting a glimpse into
+the commit history that you did in creating this project is very valuable to
+this interview. 
+
+And don't worry if you have simple commits like "fix typo" or "deleted the
+wrong files", or commits where you were testing things out or getting familiar
+with some python package, our repositories are full of those (and even more
+embarrassing things!)
