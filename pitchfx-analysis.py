@@ -14,6 +14,12 @@ def main(argv):
       if "inning" in filename.lower():
         data_filenames.append(root + "/" + filename)
 
+  classifications = {
+    "FT": "fast", "FF": "fast", "FA": "fast", "FS": "fast",
+    "CU": "curve", "CB": "curve",
+    "SL": "slide"
+  }
+
   # parse our .xml files via an element tree
   pitch_types = []
   for filename in data_filenames:
@@ -23,17 +29,15 @@ def main(argv):
       # if the file can't be parsed, skip it
       continue
 
-    # for every game, iterate through the elements to find the pitch types
+    # for every game, iterate through the elements to find the pitch types in all of the atbats
     for inning in game.getroot():
       for half in inning:
         for event in half:
           if event.tag == "atbat":
-            for action in event:
-              if action.tag == "pitch":
-                pitch = action.get("pitch_type", None)
-                if pitch:
-                  pitch_types.append(pitch)
-  print(len(pitch_types))
+            pitches = [classifications.get(action.attrib["pitch_type"], "misc")
+                       for action in event
+                       if action.tag == "pitch" and "pitch_type" in action.attrib]
+            print(pitches)
 
 
 if __name__ == "__main__":
