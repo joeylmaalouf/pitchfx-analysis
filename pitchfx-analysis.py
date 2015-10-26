@@ -52,13 +52,14 @@ def main(argv):
         for event in half:
           if event.tag == "atbat":
             pitches = tuple(pitch_classes.get(action.attrib["pitch_type"], "misc")
-                       for action in event
-                       if action.tag == "pitch" and "pitch_type" in action.attrib)
+                            for action in event
+                            if action.tag == "pitch" and "pitch_type" in action.attrib)
             sequence = pitches[-3:]
             if sequence in results.keys():
               outcome = outcome_classes[event.attrib["event"]]
               results[sequence][outcome] += 1
 
+  # create a side-by-side absolute bar chart to compare the results
   plt.figure()
   plt.title("Absolute Comparison")
   for i, (k, v) in enumerate(results.items()):
@@ -66,8 +67,30 @@ def main(argv):
     plt.bar(i - 0.1, v["hitout"],    width = 0.2, align = "center", color = "g")
     plt.bar(i + 0.1, v["strikeout"], width = 0.2, align = "center", color = "b")
     plt.bar(i + 0.3, v["walk"],      width = 0.2, align = "center", color = "k")
-  plt.xticks(range(len(results)), [", ".join(throws) for throws in results.keys()], rotation = 45)
-  plt.legend(["hit", "hitout", "strikeout", "walk"])
+  plt.xticks(range(len(results)), [", ".join(throws) for throws in results.keys()], rotation = 30)
+  plt.legend(["hit", "hitout", "strikeout", "walk"], fancybox = True, shadow = True)
+  plt.tight_layout()
+  plt.show()
+
+  # sum the total occurrences of each sequence
+  # to then use in calculating the percentages
+  ratios = { sequence:
+             { key:
+               float(val) / sum(counts.values())
+              for key, val in results[sequence].items() }
+            for sequence, counts in results.items() }
+
+  # create a stacked percentage bar chart to compare the results
+  plt.figure()
+  plt.title("Percentage Comparison")
+  for i, (k, v) in enumerate(ratios.items()):
+    plt.bar(i, v["hit"],       bottom = 0,                                       width = 0.5, align = "center", color = "r")
+    plt.bar(i, v["hitout"],    bottom = v["hit"],                                width = 0.5, align = "center", color = "g")
+    plt.bar(i, v["strikeout"], bottom = v["hit"] + v["hitout"],                  width = 0.5, align = "center", color = "b")
+    plt.bar(i, v["walk"],      bottom = v["hit"] + v["hitout"] + v["strikeout"], width = 0.5, align = "center", color = "k")
+  plt.xlim(-0.5, len(results) + 0.5)
+  plt.xticks(range(len(results)), [", ".join(throws) for throws in results.keys()], rotation = 30)
+  plt.legend(["hit", "hitout", "strikeout", "walk"], fancybox = True, shadow = True)
   plt.tight_layout()
   plt.show()
 
