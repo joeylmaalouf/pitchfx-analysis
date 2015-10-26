@@ -72,15 +72,14 @@ def main(argv):
   plt.tight_layout()
   plt.show()
 
-  # sum the total occurrences of each sequence
-  # to then use in calculating the percentages
+  # turn the raw results into ratios
   ratios = { sequence:
              { key:
                100.0 * val / sum(counts.values())
               for key, val in results[sequence].items() }
             for sequence, counts in results.items() }
 
-  # create a stacked percentage bar chart to compare the results
+  # create a pie chart to compare the results
   fig, axes = plt.subplots(2, 2)
   axes = axes.reshape(4)
   fig.suptitle("Percentage Comparison", fontweight = "bold")
