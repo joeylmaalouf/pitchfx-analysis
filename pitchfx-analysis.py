@@ -61,7 +61,7 @@ def main(argv):
 
   # create a side-by-side absolute bar chart to compare the results
   plt.figure()
-  plt.title("Absolute Comparison")
+  plt.title("Absolute Comparison", fontweight = "bold")
   for i, (k, v) in enumerate(results.items()):
     plt.bar(i - 0.3, v["hit"],       width = 0.2, align = "center", color = "r")
     plt.bar(i - 0.1, v["hitout"],    width = 0.2, align = "center", color = "g")
@@ -76,22 +76,23 @@ def main(argv):
   # to then use in calculating the percentages
   ratios = { sequence:
              { key:
-               float(val) / sum(counts.values())
+               100.0 * val / sum(counts.values())
               for key, val in results[sequence].items() }
             for sequence, counts in results.items() }
 
   # create a stacked percentage bar chart to compare the results
-  plt.figure()
-  plt.title("Percentage Comparison")
+  fig, axes = plt.subplots(2, 2)
+  axes = axes.reshape(4)
+  fig.suptitle("Percentage Comparison", fontweight = "bold")
+  colors = ["r", "g", "b", "k"]
   for i, (k, v) in enumerate(ratios.items()):
-    plt.bar(i, v["hit"],       bottom = 0,                                       width = 0.5, align = "center", color = "r")
-    plt.bar(i, v["hitout"],    bottom = v["hit"],                                width = 0.5, align = "center", color = "g")
-    plt.bar(i, v["strikeout"], bottom = v["hit"] + v["hitout"],                  width = 0.5, align = "center", color = "b")
-    plt.bar(i, v["walk"],      bottom = v["hit"] + v["hitout"] + v["strikeout"], width = 0.5, align = "center", color = "k")
-  plt.xlim(-0.5, len(results) + 0.5)
-  plt.xticks(range(len(results)), [", ".join(throws) for throws in results.keys()], rotation = 30)
-  plt.legend(["hit", "hitout", "strikeout", "walk"], fancybox = True, shadow = True)
-  plt.tight_layout()
+    axes[i].pie([v["hit"], v["hitout"], v["strikeout"], v["walk"]],
+                labels = ["hit", "hitout", "strikeout", "walk"],
+                labeldistance = 1.1, colors = colors,
+                shadow = True, counterclock = False)
+    axes[i].axis("equal")
+    axes[i].set_xlabel(", ".join(k))
+  plt.tight_layout(pad = 3.0)
   plt.show()
 
 
