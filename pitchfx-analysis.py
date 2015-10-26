@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import os
 import sys
 from xml.etree import ElementTree as ET
@@ -57,8 +58,18 @@ def main(argv):
             if sequence in results.keys():
               outcome = outcome_classes[event.attrib["event"]]
               results[sequence][outcome] += 1
-  for k, v in results.items():
-    print k, v
+
+  plt.figure()
+  plt.title("Absolute Comparison")
+  for i, (k, v) in enumerate(results.items()):
+    plt.bar(i - 0.3, v["hit"],       width = 0.2, align = "center", color = "r")
+    plt.bar(i - 0.1, v["hitout"],    width = 0.2, align = "center", color = "g")
+    plt.bar(i + 0.1, v["strikeout"], width = 0.2, align = "center", color = "b")
+    plt.bar(i + 0.3, v["walk"],      width = 0.2, align = "center", color = "k")
+  plt.xticks(range(len(results)), [", ".join(throws) for throws in results.keys()], rotation = 45)
+  plt.legend(["hit", "hitout", "strikeout", "walk"])
+  plt.tight_layout()
+  plt.show()
 
 
 if __name__ == "__main__":
