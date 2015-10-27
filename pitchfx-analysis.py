@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import os
 import sys
-from xml.etree import ElementTree as ET
+from lxml import etree as ET
 
 
 def main(argv):
@@ -42,7 +42,7 @@ def main(argv):
   for filename in data_filenames:
     try:
       game = ET.parse(filename)
-    except ET.ParseError:
+    except ET.XMLSyntaxError:
       # if the file can't be parsed, skip it
       continue
 
