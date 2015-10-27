@@ -1,7 +1,7 @@
+from lxml import etree as ET
 import matplotlib.pyplot as plt
 import os
 import sys
-from lxml import etree as ET
 
 
 def bar_charts(results, title, width = 0.2):
