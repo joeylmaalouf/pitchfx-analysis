@@ -69,7 +69,7 @@ def main(argv):
     ("fast", "fast", "curve"):  { "hit": 0, "hitout": 0, "strikeout": 0, "walk": 0 },
     ("fast", "fast", "fast"):   { "hit": 0, "hitout": 0, "strikeout": 0, "walk": 0 },
     ("fast", "slide", "slide"): { "hit": 0, "hitout": 0, "strikeout": 0, "walk": 0 },
-    ("slide", "fast", "slide"): { "hit": 0, "hitout": 0, "strikeout": 0, "walk": 0 },
+    ("slide", "fast", "slide"): { "hit": 0, "hitout": 0, "strikeout": 0, "walk": 0 }
   }
   # bonus results dict for the extra handedness graphs
   handedness_results = {
