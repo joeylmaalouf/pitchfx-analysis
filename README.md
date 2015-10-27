@@ -15,11 +15,7 @@ First, the `sys` module is used to read the (optional) data directory argument f
 
 
 ### Control Flow
-...
-
-
-### Dependencies
-...
+The code flows straightforwardly through the data parsing in `main()`, then splits off and makes use of the `bar_charts()` and `pie_charts()` functions to create the different graphs.
 
 
 ### Example Usage
