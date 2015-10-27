@@ -102,10 +102,6 @@ def main(argv):
               handedness = (event.attrib["p_throws"] + " pitcher", event.attrib["stand"] + " batter")
               handedness_results[handedness][outcome] += 1
 
-  # create some bar charts to compare the results
-  bar_charts(sequence_results, "Absolute Comparison (Pitching Sequence)")
-  bar_charts(handedness_results, "Absolute Comparison (Handedness)")
-
   # turn the raw results into ratios
   sequence_ratios = { sequence:
              { key:
@@ -118,8 +114,10 @@ def main(argv):
               for key, val in handedness_results[handedness].items() }
             for handedness, counts in handedness_results.items() }
 
-  # create some pie charts to compare the ratios
+  # create some bar and pie charts to compare the results
+  bar_charts(sequence_results, "Absolute Comparison (Pitching Sequence)")
   pie_charts(sequence_ratios, "Percentage Comparison (Pitching Sequence)")
+  bar_charts(handedness_results, "Absolute Comparison (Handedness)")
   pie_charts(handedness_ratios, "Percentage Comparison (Handedness)")
 
 
